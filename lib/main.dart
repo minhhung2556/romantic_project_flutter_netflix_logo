@@ -6,14 +6,6 @@ import 'package:flutter/material.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
-  /*runApp(DevicePreview(
-      enabled: true,
-      plugins: [
-        const ScreenshotPlugin(),
-        const FileExplorerPlugin(),
-        const SharedPreferencesExplorerPlugin(),
-      ],
-      builder: (context) => MyApp()));*/
 }
 
 class MyApp extends StatelessWidget {
@@ -47,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Center(
           child: NetFlixLogo(
         color: Color(0xffff0000),
-        durationMilliseconds: 800,
+        durationMilliseconds: 1200,
         width: 0.7 * screenSize.height / 3,
         height: screenSize.height / 3,
         strokeWidth: 2,
