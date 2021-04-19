@@ -1,20 +1,19 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:device_preview/device_preview.dart';
-import 'package:device_preview/plugins.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(DevicePreview(
+  runApp(MyApp());
+  /*runApp(DevicePreview(
       enabled: true,
       plugins: [
         const ScreenshotPlugin(),
         const FileExplorerPlugin(),
         const SharedPreferencesExplorerPlugin(),
       ],
-      builder: (context) => MyApp()));
+      builder: (context) => MyApp()));*/
 }
 
 class MyApp extends StatelessWidget {
@@ -261,12 +260,12 @@ class NetFlixLogoPainter extends CustomPainter {
     var ww = sc * delta;
     for (var i = start; i <= aw; i += strokeWidth) {
       var p0, p1;
-      p0 = Offset(i + a * k * delta * tweenSpeeds[k] - a * (ww - aw) / 2, 0);
-      p1 = Offset(i + a * k * delta * tweenSpeeds[k] - a * (ww - aw) / 2,
-          size.height - i * shear);
+      p0 = Offset(i + a * k * delta - a * (ww - aw) / 2, 0);
+      p1 = Offset(
+          i + a * k * delta - a * (ww - aw) / 2, size.height - i * shear);
 
       var paint = Paint();
-      paint.strokeWidth = strokeWidth;
+      paint.strokeWidth = strokeWidth + a * strokeWidth * 3;
       var v = b * ((tweenSpeeds[j] / 10 + tweenStops[j]) * 10);
       paint.shader = ui.Gradient.linear(
         p1,
