@@ -76,6 +76,7 @@ class _NetFlixLogoState extends State<NetFlixLogo>
   List<int> _tweenSpeeds;
   ColorTween _colorTween;
   CrossFadeState _buttonState = CrossFadeState.showFirst;
+  List<Color> _endColors;
 
   @override
   void initState() {
@@ -125,6 +126,8 @@ class _NetFlixLogoState extends State<NetFlixLogo>
     _acMain =
         AnimationController(vsync: this, duration: Duration(milliseconds: dur));
 
+    _endColors = List<Color>.generate(100, (index) => randomColor());
+
     super.initState();
   }
 
@@ -159,6 +162,7 @@ class _NetFlixLogoState extends State<NetFlixLogo>
               alignment: Alignment(-1, 0),
               child: CustomPaint(
                 painter: NetFlixLogoPainter(
+                  endColors: _endColors,
                   animationValues: _ac.map((e) => e.value).toList(),
                   colorTween: _colorTween,
                   strokeWidth: widget.strokeWidth,
@@ -174,7 +178,7 @@ class _NetFlixLogoState extends State<NetFlixLogo>
         Align(
           alignment: Alignment.bottomCenter,
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 100),
+            padding: const EdgeInsets.only(bottom: 20),
             child: AnimatedCrossFade(
               duration: Duration(milliseconds: 400),
               crossFadeState: _buttonState,
@@ -218,18 +222,17 @@ class NetFlixLogoPainter extends CustomPainter {
   final int parts = 3;
   final double shear = 0.1;
 
-  List<Color> _endColors;
+  final List<Color> endColors;
 
   NetFlixLogoPainter({
+    this.endColors,
     this.animationValues,
     this.strokeWidth,
     this.colorTween,
     this.stops,
     this.tweenStops,
     this.tweenSpeeds,
-  }) {
-    _endColors = List<Color>.generate(100, (index) => randomColor());
-  }
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -252,13 +255,16 @@ class NetFlixLogoPainter extends CustomPainter {
     var ww = sc * delta;
     for (var i = start; i <= aw; i += strokeWidth) {
       var p0, p1;
-      p0 = Offset(i + a * k * delta - a * (ww - aw) / 2, 0);
+      p0 = Offset(
+          i + a * k * delta + (a * delta * tweenSpeeds[j]) - a * (ww - aw) / 2,
+          0);
       p1 = Offset(
-          i + a * k * delta - a * (ww - aw) / 2, size.height - i * shear);
+          i + a * k * delta + (a * delta * tweenSpeeds[j]) - a * (ww - aw) / 2,
+          size.height - i * shear);
 
       var paint = Paint();
-      paint.strokeWidth = strokeWidth + a * strokeWidth * 3;
-      var v = b * ((tweenSpeeds[j] / 10 + tweenStops[j]) * 10);
+      paint.strokeWidth = strokeWidth + (a * delta * tweenSpeeds[j]);
+      var v = b * (tweenSpeeds[j] * math.Random.secure().nextDouble());
       paint.shader = ui.Gradient.linear(
         p1,
         p0,
@@ -266,7 +272,7 @@ class NetFlixLogoPainter extends CustomPainter {
           colorTween
               .transform(math.max(0, a * tweenSpeeds[j]))
               .withOpacity(math.min(1, 0.4 + animationValues[2])),
-          _endColors[j],
+          endColors[j],
         ],
         <double>[
           math.max(0, 1 - v),
